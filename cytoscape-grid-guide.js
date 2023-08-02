@@ -1425,86 +1425,75 @@ module.exports = function (opts, cy, debounce) {
     resetCanvas();
 
     function drawGrid() {
+      if (!options) {
+        return; // Exit if options are not defined
+      }
+    
       var zoom = cy.zoom();
       var canvasWidth = cy.width();
       var canvasHeight = cy.height();
       var increment = options.gridSpacing * zoom;
       var incrementSmall = options.gridSpacingSmall * zoom;
       var pan = cy.pan();
-      var initialValueX = pan.x%increment;
-      var initialValueY = pan.y%increment;
-
+      var initialValueX = Math.floor(pan.x / increment) * increment;
+      var initialValueY = Math.floor(pan.y / increment) * increment;
+    
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    
+      const options = {
+        gridSpacing: 40,
+        gridSpacingSmall: 10,
+        gridColor: 'gray',
+        gridColorSmall: '#ff0000',
+        lineWidth: 1.0,
+        lineWidthSmall: 1.0,
+      };
 
-      ctx.strokeStyle = options.gridColor;
-      ctx.lineWidth = options.lineWidth;
-
-      // Draw large horizontal grid lines
-      for (var y = initialValueY; y < canvasHeight; y += increment) {
+      function drawGridLines(increment, lineWidth, gridColor) {
+        ctx.strokeStyle = gridColor;
+        ctx.lineWidth = lineWidth;
+    
+        for (var y = initialValueY; y < canvasHeight; y += increment) {
           ctx.beginPath();
           ctx.moveTo(0, y);
           ctx.lineTo(canvasWidth, y);
           ctx.stroke();
-      }
-
-      // Draw large vertical grid lines
-      for (var x = initialValueX; x < canvasWidth; x += increment) {
+        }
+    
+        for (var x = initialValueX; x < canvasWidth; x += increment) {
           ctx.beginPath();
           ctx.moveTo(x, 0);
           ctx.lineTo(x, canvasHeight);
           ctx.stroke();
+        }
       }
-
-      if (options.gridSpacingSmall > 0 && options.gridColorSmall) {
-          ctx.strokeStyle = options.gridColorSmall;
-          ctx.lineWidth = options.lineWidthSmall;
-
-          // Draw small horizontal grid lines
-          for (var y = initialValueY; y < canvasHeight; y += incrementSmall) {
-              ctx.beginPath();
-              ctx.moveTo(0, y);
-              ctx.lineTo(canvasWidth, y);
-              ctx.stroke();
-          }
-
-          // Draw small vertical grid lines
-          for (var x = initialValueX; x < canvasWidth; x += incrementSmall) {
-              ctx.beginPath();
-              ctx.moveTo(x, 0);
-              ctx.lineTo(x, canvasHeight);
-              ctx.stroke();
-          }
-      }
-  }
-  drawGrid();
     
-    var clearDrawing = function() {
-        var width = cy.width();
-        var height = cy.height();
-
-        ctx.clearRect( 0, 0, width, height );
+      // Draw large grid lines
+      drawGridLines(increment, options.lineWidth, options.gridColor);
+    
+      if (options.gridSpacingSmall > 0 && options.gridColorSmall) {
+        // Draw small grid lines
+        drawGridLines(incrementSmall, options.lineWidthSmall, options.gridColorSmall);
+      }
+    }
+    
+    var clearDrawing = function () {
+      var width = cy.width();
+      var height = cy.height();
+      ctx.fillStyle = '#FFFFFF'; // Set the background color to clear the canvas
+      ctx.fillRect(0, 0, width, height);
     };
-
-    var resizeCanvas = debounce(function() {
-        $canvas.height = cy.height();
-        $canvas.width = cy.width();
-        $canvas.style.position = 'absolute';
-        $canvas.style.top = 0;
-        $canvas.style.left = 0;
-        $canvas.style.zIndex = options.gridStackOrder;
-
-        setTimeout( function() {
-            $canvas.height = cy.height();
-            $canvas.width = cy.width();
-
-            var canvasBb = offset($canvas);
-            var containerBb = offset($container);
-            $canvas.style.top = -(canvasBb.top - containerBb.top);
-            $canvas.style.left = -(canvasBb.left - containerBb.left);
-            drawGrid();
-        }, 0 );
-
+    
+    var resizeCanvas = debounce(function () {
+      $canvas.height = cy.height();
+      $canvas.width = cy.width();
+      $canvas.style.position = 'absolute';
+      $canvas.style.top = 0;
+      $canvas.style.left = 0;
+      $canvas.style.zIndex = options.gridStackOrder;
+      drawGrid();
     }, 250);
+    
 
 
 
