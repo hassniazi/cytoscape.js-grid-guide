@@ -1699,7 +1699,7 @@ module.exports = function (cy, snap, resize, snapToGridDuringDrag, drawGrid, gui
 	var currentOptions;
 
 	var specialOpts = {
-		drawGrid: ["gridSpacing", "zoomDash", "panGrid", "gridStackOrder", "gridColor", "lineWidth", "lineDash"],
+		drawGrid: ["gridSpacing", "gridSpacingSmall", "zoomDash", "panGrid", "gridStackOrder", "gridColor", "gridColorSmall", "lineWidth", "lineWidthSmall", "lineDash"],
 		guidelines: ["gridSpacing", "guidelinesStackOrder", "guidelinesTolerance", "guidelinesStyle", "distributionGuidelines", "range", "minDistRange",  "geometricGuidelineRange"],
 		resize: ["gridSpacing"],
 		parentPadding: ["gridSpacing", "parentSpacing"],
