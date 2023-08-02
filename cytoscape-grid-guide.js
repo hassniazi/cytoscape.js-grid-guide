@@ -1708,10 +1708,10 @@ module.exports = function (cy, snap, resize, snapToGridDuringDrag, drawGrid, gui
 
 	var specialOpts = {
 		drawGrid: ["gridSpacing", "gridSpacingSmall", "zoomDash", "panGrid", "gridStackOrder", "gridColor", "gridColorSmall", "lineWidth", "lineWidthSmall", "lineDash"],
-		guidelines: ["gridSpacing", "guidelinesStackOrder", "guidelinesTolerance", "guidelinesStyle", "distributionGuidelines", "range", "minDistRange",  "geometricGuidelineRange"],
+		guidelines: ["gridSpacing", "gridSpacingSmall", "guidelinesStackOrder", "guidelinesTolerance", "guidelinesStyle", "distributionGuidelines", "range", "minDistRange",  "geometricGuidelineRange"],
 		resize: ["gridSpacing"],
 		parentPadding: ["gridSpacing", "parentSpacing"],
-		snapToGridOnRelease: ["gridSpacing", "snapToGridCenter"]
+		snapToGridOnRelease: ["gridSpacing", "gridSpacingSmall", "snapToGridCenter"]
 	};
 
 	function syncWithOptions(options) {
@@ -2915,8 +2915,8 @@ module.exports = function (opts, cy, debounce) {
 
 				var snap, resize, snapToGridDuringDrag, drawGrid, eventsController, guidelines, parentPadding, alignment;
 
-				snap = _snapOnRelease(cy, options.gridSpacing, options.snapToGridCenter);
-				resize = _resize(options.gridSpacing);
+				snap = _snapOnRelease(cy, options.gridSpacing, options.gridSpacingSmall, options.snapToGridCenter);
+				resize = _resize(options.gridSpacing, options.gridSpacingSmall);
 				snapToGridDuringDrag = _snapToGridDuringDrag(cy, snap);
 				drawGrid = _drawGrid(options, cy, debounce);
 				guidelines = _guidelines(options, cy, debounce);
@@ -2999,7 +2999,7 @@ module.exports = function (opts, cy) {
     };
 };
 },{}],10:[function(require,module,exports){
-module.exports = function (gridSpacing) {
+module.exports = function (gridSpacing, gridSpacingSmall) {
 
 
     var changeOptions = function (opts) {
