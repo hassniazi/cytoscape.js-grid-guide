@@ -1429,7 +1429,7 @@ module.exports = function (opts, cy, debounce) {
         var canvasWidth = cy.width();
         var canvasHeight = cy.height();
         var increment = options.gridSpacing*zoom;
-        var incrementSmall = '8';
+        var incrementSmall = options.gridSpacingSmall*zoom;
         var pan = cy.pan();
         var initialValueX = pan.x%increment;
         var initialValueY = pan.y%increment;
@@ -1446,10 +1446,10 @@ module.exports = function (opts, cy, debounce) {
             '<path d="M 10 0 L 10 ' + increment + '" fill="none" stroke="' + options.gridColor + '" stroke-width="' + options.lineWidth + '" />\n' +
             '</pattern>\n' +
             '<pattern id="smallHorizontalLines" width="' + incrementSmall + '" height="' + incrementSmall + '" patternUnits="userSpaceOnUse">\n' +
-            '<path d="M 0 0 L 0 ' + incrementSmall + '" fill="none" stroke="' + options.gridColor + '" stroke-width="' + options.lineWidth + '" />\n' +
+            '<path d="M 0 0 L 0 ' + incrementSmall + '" fill="none" stroke="' + options.gridColorSmall + '" stroke-width="' + options.lineWidthSmall + '" />\n' +
             '</pattern>\n' +
             '<pattern id="smallVerticalLines" width="' + incrementSmall + '" height="' + incrementSmall + '" patternUnits="userSpaceOnUse">\n' +
-            '<path d="M 0 0 L ' + incrementSmall + ' 0" fill="none" stroke="' + options.gridColor + '" stroke-width="' + options.lineWidth + '" />\n' +
+            '<path d="M 0 0 L ' + incrementSmall + ' 0" fill="none" stroke="' + options.gridColorSmall + '" stroke-width="' + options.lineWidthSmall + '" />\n' +
             '</pattern>\n' +
             '</defs>\n' +
             '<rect width="100%" height="100%" fill="url(#horizontalLines)" transform="translate(' + initialValueX + ', ' + initialValueY + ')" />\n' +
@@ -2996,6 +2996,7 @@ module.exports = function (gridSpacing) {
 
     var changeOptions = function (opts) {
         gridSpacing = Number(opts.gridSpacing);
+        gridSpacingSmall = Number(opts.gridSpacingSmall);
     };
 
     var getScratch = function (node) {
