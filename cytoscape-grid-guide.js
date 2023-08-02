@@ -1424,50 +1424,58 @@ module.exports = function (opts, cy, debounce) {
 
     resetCanvas();
 
-    var drawGrid = function() {
-        var zoom = cy.zoom();
-        var canvasWidth = cy.width();
-        var canvasHeight = cy.height();
-        var increment = options.gridSpacing*zoom;
-        var incrementSmall = options.gridSpacingSmall*zoom;
-        var pan = cy.pan();
-        var initialValueX = pan.x%increment;
-        var initialValueY = pan.y%increment;
+    function drawGrid() {
+      var zoom = 1;
+      var increment = options.gridSpacing * zoom;
+      var incrementSmall = options.gridSpacingSmall * zoom;
+      var pan = { x: 0, y: 0 };
 
-        ctx.strokeStyle = options.gridColor;
-        ctx.lineWidth = options.lineWidth;
+      var initialValueX = pan.x % increment;
+      var initialValueY = pan.y % increment;
 
-        var data = '\t<svg width="' + canvasWidth + '" height="' + canvasHeight + '" xmlns="http://www.w3.org/2000/svg">\n' +
-            '<defs>\n' +
-            '<pattern id="horizontalLines" width="' + increment + '" height="' + increment + '" patternUnits="userSpaceOnUse">\n' +
-            '<path d="M 0 10 L ' + increment + ' 10" fill="none" stroke="' + options.gridColor + '" stroke-width="' + options.lineWidth + '" />\n' +
-            '</pattern>\n' +
-            '<pattern id="verticalLines" width="' + increment + '" height="' + increment + '" patternUnits="userSpaceOnUse">\n' +
-            '<path d="M 10 0 L 10 ' + increment + '" fill="none" stroke="' + options.gridColor + '" stroke-width="' + options.lineWidth + '" />\n' +
-            '</pattern>\n' +
-            '<pattern id="smallHorizontalLines" width="' + incrementSmall + '" height="' + incrementSmall + '" patternUnits="userSpaceOnUse">\n' +
-            '<path d="M 0 0 L 0 ' + incrementSmall + '" fill="none" stroke="' + options.gridColorSmall + '" stroke-width="' + options.lineWidthSmall + '" />\n' +
-            '</pattern>\n' +
-            '<pattern id="smallVerticalLines" width="' + incrementSmall + '" height="' + incrementSmall + '" patternUnits="userSpaceOnUse">\n' +
-            '<path d="M 0 0 L ' + incrementSmall + ' 0" fill="none" stroke="' + options.gridColorSmall + '" stroke-width="' + options.lineWidthSmall + '" />\n' +
-            '</pattern>\n' +
-            '</defs>\n' +
-            '<rect width="100%" height="100%" fill="url(#horizontalLines)" transform="translate(' + initialValueX + ', ' + initialValueY + ')" />\n' +
-            '<rect width="100%" height="100%" fill="url(#verticalLines)" transform="translate(' + initialValueX + ', ' + initialValueY + ')" />\n' +
-            '<rect width="100%" height="100%" fill="url(#smallHorizontalLines)" transform="translate(' + initialValueX + ', ' + initialValueY + ')" />\n' +
-            '<rect width="100%" height="100%" fill="url(#smallVerticalLines)" transform="translate(' + initialValueX + ', ' + initialValueY + ')" />\n' +
-            '</svg>\n';
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        var img = new Image();
-        data = encodeURIComponent(data);
-        
-        img.onload = function () {
-            clearDrawing();
-            ctx.drawImage(img, 0, 0);
-        };
-        
-        img.src = "data:image/svg+xml," + data;
-    };
+      ctx.strokeStyle = options.gridColor;
+      ctx.lineWidth = options.lineWidth;
+
+      // Draw large horizontal grid lines
+      for (var y = initialValueY; y < canvasHeight; y += increment) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(canvasWidth, y);
+          ctx.stroke();
+      }
+
+      // Draw large vertical grid lines
+      for (var x = initialValueX; x < canvasWidth; x += increment) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, canvasHeight);
+          ctx.stroke();
+      }
+
+      if (options.gridSpacingSmall > 0 && options.gridColorSmall) {
+          ctx.strokeStyle = options.gridColorSmall;
+          ctx.lineWidth = options.lineWidthSmall;
+
+          // Draw small horizontal grid lines
+          for (var y = initialValueY; y < canvasHeight; y += incrementSmall) {
+              ctx.beginPath();
+              ctx.moveTo(0, y);
+              ctx.lineTo(canvasWidth, y);
+              ctx.stroke();
+          }
+
+          // Draw small vertical grid lines
+          for (var x = initialValueX; x < canvasWidth; x += incrementSmall) {
+              ctx.beginPath();
+              ctx.moveTo(x, 0);
+              ctx.lineTo(x, canvasHeight);
+              ctx.stroke();
+          }
+      }
+  }
+  drawGrid();
     
     var clearDrawing = function() {
         var width = cy.width();
