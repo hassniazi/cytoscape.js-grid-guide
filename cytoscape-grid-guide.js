@@ -1425,13 +1425,14 @@ module.exports = function (opts, cy, debounce) {
     resetCanvas();
 
     function drawGrid() {
-      var zoom = 1;
+      var zoom = cy.zoom();
+      var canvasWidth = cy.width();
+      var canvasHeight = cy.height();
       var increment = options.gridSpacing * zoom;
       var incrementSmall = options.gridSpacingSmall * zoom;
-      var pan = { x: 0, y: 0 };
-
-      var initialValueX = pan.x % increment;
-      var initialValueY = pan.y % increment;
+      var pan = cy.pan();
+      var initialValueX = pan.x%increment;
+      var initialValueY = pan.y%increment;
 
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
