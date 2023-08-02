@@ -1429,6 +1429,7 @@ module.exports = function (opts, cy, debounce) {
         var canvasWidth = cy.width();
         var canvasHeight = cy.height();
         var increment = options.gridSpacing*zoom;
+        var incrementSmall = '8';
         var pan = cy.pan();
         var initialValueX = pan.x%increment;
         var initialValueY = pan.y%increment;
@@ -1436,18 +1437,26 @@ module.exports = function (opts, cy, debounce) {
         ctx.strokeStyle = options.gridColor;
         ctx.lineWidth = options.lineWidth;
 
-        var data = '\t<svg width="'+ canvasWidth + '" height="'+ canvasHeight + '" xmlns="http://www.w3.org/2000/svg">\n\
-            <defs>\n\
-                <pattern id="horizontalLines" width="' + increment + '" height="' + increment + '" patternUnits="userSpaceOnUse">\n\
-                    <path d="M ' + increment + ' 0 L 0 0 0 ' + 0 + '" fill="none" stroke="' + options.gridColor + '" stroke-width="' + options.lineWidth + '" />\n\
-                </pattern>\n\
-                <pattern id="verticalLines" width="' + increment + '" height="' + increment + '" patternUnits="userSpaceOnUse">\n\
-                    <path d="M ' + 0 + ' 0 L 0 0 0 ' + increment + '" fill="none" stroke="' + options.gridColor + '" stroke-width="' + options.lineWidth + '" />\n\
-                </pattern>\n\
-            </defs>\n\
-            <rect width="100%" height="100%" fill="url(#horizontalLines)" transform="translate('+ 0 + ', ' + initialValueY + ')" />\n\
-            <rect width="100%" height="100%" fill="url(#verticalLines)" transform="translate('+ initialValueX + ', ' + 0 + ')" />\n\
-        </svg>\n';
+        var data = '\t<svg width="' + canvasWidth + '" height="' + canvasHeight + '" xmlns="http://www.w3.org/2000/svg">\n' +
+            '<defs>\n' +
+            '<pattern id="horizontalLines" width="' + increment + '" height="' + increment + '" patternUnits="userSpaceOnUse">\n' +
+            '<path d="M 0 10 L ' + increment + ' 10" fill="none" stroke="' + options.gridColor + '" stroke-width="' + options.lineWidth + '" />\n' +
+            '</pattern>\n' +
+            '<pattern id="verticalLines" width="' + increment + '" height="' + increment + '" patternUnits="userSpaceOnUse">\n' +
+            '<path d="M 10 0 L 10 ' + increment + '" fill="none" stroke="' + options.gridColor + '" stroke-width="' + options.lineWidth + '" />\n' +
+            '</pattern>\n' +
+            '<pattern id="smallHorizontalLines" width="' + incrementSmall + '" height="' + incrementSmall + '" patternUnits="userSpaceOnUse">\n' +
+            '<path d="M 0 0 L 0 ' + incrementSmall + '" fill="none" stroke="' + options.gridColor + '" stroke-width="' + options.lineWidth + '" />\n' +
+            '</pattern>\n' +
+            '<pattern id="smallVerticalLines" width="' + incrementSmall + '" height="' + incrementSmall + '" patternUnits="userSpaceOnUse">\n' +
+            '<path d="M 0 0 L ' + incrementSmall + ' 0" fill="none" stroke="' + options.gridColor + '" stroke-width="' + options.lineWidth + '" />\n' +
+            '</pattern>\n' +
+            '</defs>\n' +
+            '<rect width="100%" height="100%" fill="url(#horizontalLines)" transform="translate(' + initialValueX + ', ' + initialValueY + ')" />\n' +
+            '<rect width="100%" height="100%" fill="url(#verticalLines)" transform="translate(' + initialValueX + ', ' + initialValueY + ')" />\n' +
+            '<rect width="100%" height="100%" fill="url(#smallHorizontalLines)" transform="translate(' + initialValueX + ', ' + initialValueY + ')" />\n' +
+            '<rect width="100%" height="100%" fill="url(#smallVerticalLines)" transform="translate(' + initialValueX + ', ' + initialValueY + ')" />\n' +
+            '</svg>\n';
 
         var img = new Image();
         data = encodeURIComponent(data);
@@ -2834,13 +2843,16 @@ module.exports = function (opts, cy, debounce) {
 			drawGrid: true, // Draw grid background
 
 			// General
-			gridSpacing: 20, // Distance between the lines of the grid.
+			gridSpacing: 40, // Distance between the lines of the grid.
+      gridSpacingSmall: 10, // Distance between the lines of the grid.
 			snapToGridCenter: true, // Snaps nodes to center of gridlines. When false, snaps to gridlines themselves.
 			zoomDash: true, // Determines whether the size of the dashes should change when the drawing is zoomed in and out if grid is drawn.
 			panGrid: false, // Determines whether the grid should move then the user moves the graph if grid is drawn.
 			gridStackOrder: -1, // Namely z-index
 			gridColor: '#dedede', // Color of grid lines
+      gridColorSmall: '##ff0000', // Color of grid lines
 			lineWidth: 1.0, // Width of grid lines
+      lineWidthSmall: 1.0, // Width of grid lines
 			guidelinesStackOrder: 4, // z-index of guidelines
 			guidelinesTolerance: 2.00, // Tolerance distance for rendered positions of nodes' interaction.
 			guidelinesStyle: { // Set ctx properties of line. Properties are here:
